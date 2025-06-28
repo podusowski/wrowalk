@@ -1,9 +1,6 @@
 use egui::{Color32, Response, Ui};
 use walkers::{
-    extras::{
-        GroupedPlaces, Image, LabeledSymbol, LabeledSymbolGroup, LabeledSymbolGroupStyle,
-        LabeledSymbolStyle, Places, Texture,
-    },
+    extras::{GroupedPlaces, Image, LabeledSymbol, LabeledSymbolStyle, Places, Texture},
     MapMemory, Plugin, Position, Projector,
 };
 
@@ -11,25 +8,20 @@ use crate::places;
 
 /// Creates a built-in [`GroupedPlaces`] plugin populated with some predefined places.
 pub fn places() -> impl Plugin {
-    GroupedPlaces::new(
-        vec![
-            LabeledSymbol {
-                position: places::wroclaw_glowny(),
-                label: "Wrocław Główny\ntrain station".to_owned(),
-                symbol: '🚆',
-                style: LabeledSymbolStyle::default(),
-            },
-            LabeledSymbol {
-                position: places::dworcowa_bus_stop(),
-                label: "Bus stop".to_owned(),
-                symbol: '🚌',
-                style: LabeledSymbolStyle::default(),
-            },
-        ],
-        LabeledSymbolGroup {
-            style: LabeledSymbolGroupStyle::default(),
+    Places::new(vec![
+        LabeledSymbol {
+            position: places::wroclaw_glowny(),
+            label: "Wrocław Główny\ntrain station".to_owned(),
+            symbol: '🚆',
+            style: LabeledSymbolStyle::default(),
         },
-    )
+        LabeledSymbol {
+            position: places::dworcowa_bus_stop(),
+            label: "Bus stop".to_owned(),
+            symbol: '🚌',
+            style: LabeledSymbolStyle::default(),
+        },
+    ])
 }
 
 /// Helper structure for the `Images` plugin.
@@ -65,13 +57,7 @@ pub fn images(images_plugin_data: &mut ImagesPluginData) -> impl Plugin {
 pub struct CustomShapes {}
 
 impl Plugin for CustomShapes {
-    fn run(
-        self: Box<Self>,
-        ui: &mut Ui,
-        response: &Response,
-        projector: &Projector,
-        _map_memory: &MapMemory,
-    ) {
+    fn run(self: Box<Self>, ui: &mut Ui, response: &Response, projector: &Projector) {
         // Position of the point we want to put our shapes.
         let position = places::capitol();
 
@@ -116,13 +102,7 @@ impl ClickWatcher {
 }
 
 impl Plugin for &mut ClickWatcher {
-    fn run(
-        self: Box<Self>,
-        ui: &mut Ui,
-        response: &Response,
-        projector: &Projector,
-        _map_memory: &MapMemory,
-    ) {
+    fn run(self: Box<Self>, ui: &mut Ui, response: &Response, projector: &Projector) {
         if !response.changed() && response.clicked_by(egui::PointerButton::Primary) {
             self.clicked_at = response
                 .interact_pointer_pos()
