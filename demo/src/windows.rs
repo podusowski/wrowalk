@@ -39,23 +39,6 @@ pub fn controls(app: &mut MyApp, ui: &Ui, http_stats: Vec<walkers::HttpStats>) {
                             ui.selectable_value(&mut app.selected_provider, *p, format!("{:?}", p));
                         }
                     });
-
-                ui.checkbox(&mut app.zoom_with_ctrl, "Zoom with Ctrl");
-            });
-
-            ui.collapsing("HTTP statistics", |ui| {
-                for http_stats in http_stats {
-                    ui.label(format!(
-                        "{:?} requests in progress: {}",
-                        app.selected_provider, http_stats.in_progress
-                    ));
-                }
-            });
-
-            ui.collapsing("Images plugin", |ui| {
-                ui.add(Slider::new(&mut app.images_plugin_data.angle, 0.0..=360.0).text("Rotate"));
-                ui.add(Slider::new(&mut app.images_plugin_data.x_scale, 0.1..=3.0).text("Scale X"));
-                ui.add(Slider::new(&mut app.images_plugin_data.y_scale, 0.1..=3.0).text("Scale Y"));
             });
         });
 }
