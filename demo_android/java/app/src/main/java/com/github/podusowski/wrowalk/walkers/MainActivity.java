@@ -1,4 +1,4 @@
-package local.walkers;
+package com.github.podusowski.wrowalk;
 
 import android.os.Bundle;
 import android.util.Log;
