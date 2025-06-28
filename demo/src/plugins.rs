@@ -1,7 +1,6 @@
-use egui::{Color32, Response, Ui};
 use walkers::{
-    extras::{GroupedPlaces, Image, LabeledSymbol, LabeledSymbolStyle, Places, Texture},
-    MapMemory, Plugin, Position, Projector,
+    extras::{LabeledSymbol, LabeledSymbolStyle, Places},
+    Plugin,
 };
 
 use crate::places;

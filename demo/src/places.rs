@@ -14,14 +14,3 @@ pub fn wroclaw_glowny() -> Position {
 pub fn dworcowa_bus_stop() -> Position {
     lon_lat(17.03940, 51.10005)
 }
-
-/// Musical Theatre Capitol.
-/// https://www.teatr-capitol.pl/
-pub fn capitol() -> Position {
-    lon_lat(17.03018, 51.10073)
-}
-
-/// Shopping center, and the main intercity bus station.
-pub fn wroclavia() -> Position {
-    lon_lat(17.03471, 51.09648)
-}
