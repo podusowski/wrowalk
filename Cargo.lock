@@ -904,6 +904,8 @@ dependencies = [
  "eframe",
  "egui",
  "egui_extras",
+ "log",
+ "tokio",
  "walkers",
 ]
 

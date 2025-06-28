@@ -1,3 +1,4 @@
+mod io;
 mod local_tiles;
 mod places;
 mod plugins;
