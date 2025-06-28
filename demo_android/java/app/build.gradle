@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace "local.walkers"
+    namespace "com.github.podusowski.wrowalk"
     compileSdk 31
 
     defaultConfig {
