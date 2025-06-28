@@ -5,7 +5,7 @@ edition = "2021"
 publish = false
 
 [dependencies]
-walkers = { path = "../walkers" }
+walkers.workspace = true
 eframe.workspace = true
 egui.workspace = true
 egui_extras.workspace = true
