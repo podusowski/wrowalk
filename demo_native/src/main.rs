@@ -1,5 +1,5 @@
 #[cfg(not(target_arch = "wasm32"))]
-use demo::MyApp;
+use wrowalk::MyApp;
 
 #[cfg(not(target_arch = "wasm32"))]
 fn main() -> Result<(), eframe::Error> {

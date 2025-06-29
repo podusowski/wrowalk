@@ -9,7 +9,7 @@ log = "0.4"
 android_logger = "0.15"
 eframe = { workspace = true, features = ["wgpu", "android-game-activity"] }
 egui-winit.workspace = true
-demo = { path = "../../demo" }
+wrowalk = { path = "../../wrowalk" }
 
 [lib]
 name = "main"

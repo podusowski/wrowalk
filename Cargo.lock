@@ -919,39 +919,24 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5c297a1c74b71ae29df00c3e22dd9534821d60eb9af5a0192823fa2acea70c2a"
 
 [[package]]
-name = "demo"
-version = "0.1.0"
-dependencies = [
- "csv",
- "eframe",
- "egui",
- "egui_extras",
- "log",
- "reqwest",
- "serde",
- "tokio",
- "walkers",
-]
-
-[[package]]
 name = "demo_android"
 version = "0.1.0"
 dependencies = [
  "android_logger",
- "demo",
  "eframe",
  "egui-winit",
  "log",
+ "wrowalk",
 ]
 
 [[package]]
 name = "demo_native"
 version = "0.1.0"
 dependencies = [
- "demo",
  "eframe",
  "egui",
  "env_logger",
+ "wrowalk",
 ]
 
 [[package]]
@@ -5445,6 +5430,21 @@ name = "writeable"
 version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ea2f10b9bb0928dfb1b42b65e1f9e36f7f54dbdf08457afefb38afcdec4fa2bb"
+
+[[package]]
+name = "wrowalk"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "eframe",
+ "egui",
+ "egui_extras",
+ "log",
+ "reqwest",
+ "serde",
+ "tokio",
+ "walkers",
+]
 
 [[package]]
 name = "x11-dl"
