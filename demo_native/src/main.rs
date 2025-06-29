@@ -5,7 +5,7 @@ use demo::MyApp;
 fn main() -> Result<(), eframe::Error> {
     env_logger::init();
     eframe::run_native(
-        "MyApp",
+        "Wrowalk",
         Default::default(),
         Box::new(|cc| Ok(Box::new(MyApp::new(cc.egui_ctx.clone())))),
     )
