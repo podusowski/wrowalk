@@ -1,6 +1,5 @@
-use std::collections::HashMap;
-
 use serde::Deserialize;
+use std::collections::HashMap;
 
 pub async fn fetch_positions() -> Vec<MpkPosition> {
     let url =
@@ -17,6 +16,7 @@ pub async fn fetch_positions() -> Vec<MpkPosition> {
             let record: MpkPosition = record.unwrap();
             record
         })
+        .filter(MpkPosition::valid)
         .collect()
 }
 
@@ -38,4 +38,10 @@ pub struct MpkPosition {
     longitude: f64,
     #[serde(rename = "Data_Aktualizacji")]
     last_update: String,
+}
+
+impl MpkPosition {
+    fn valid(position: &MpkPosition) -> bool {
+        position.line_name != "None" && position.line_name != ""
+    }
 }
