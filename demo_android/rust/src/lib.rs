@@ -14,9 +14,9 @@ fn android_main(
     options.renderer = Renderer::Wgpu;
     options.android_app = Some(app);
     eframe::run_native(
-        "Walkers",
+        "Wrowalk",
         options,
-        Box::new(|cc| Ok(Box::new(demo::MyApp::new(cc.egui_ctx.clone())))),
+        Box::new(|cc| Ok(Box::new(wrowalk::MyApp::new(cc.egui_ctx.clone())))),
     )?;
 
     Ok(())
