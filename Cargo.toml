@@ -1,9 +1,5 @@
 [workspace]
-members = [
-    "demo",
-    "demo_native",
-    "demo_android/rust",
-]
+members = ["demo", "demo_native", "demo_android/rust"]
 resolver = "2"
 
 [workspace.package]
@@ -16,3 +12,6 @@ egui = "0.31.0"
 egui_extras = { version = "0.31.0", features = ["svg"] }
 eframe = "0.31.0"
 egui-winit = "0.31.0"
+
+[patch.crates-io]
+walkers = { git = "https://github.com/podusowski/walkers.git" }

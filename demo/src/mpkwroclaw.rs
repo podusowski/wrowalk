@@ -16,7 +16,7 @@ pub async fn fetch_positions() -> Vec<MpkPosition> {
             let record: MpkPosition = record.unwrap();
             record
         })
-        .filter(MpkPosition::valid)
+        .filter(MpkPosition::sane)
         .collect()
 }
 
@@ -41,7 +41,22 @@ pub struct MpkPosition {
 }
 
 impl MpkPosition {
-    fn valid(position: &MpkPosition) -> bool {
+    /// Does this record even make sense.
+    fn sane(position: &MpkPosition) -> bool {
         position.line_name != "None" && position.line_name != ""
+    }
+}
+
+impl From<MpkPosition> for walkers::extras::LabeledSymbol {
+    fn from(position: MpkPosition) -> Self {
+        walkers::extras::LabeledSymbol {
+            position: walkers::lat_lon(position.latitude, position.longitude),
+            label: format!(
+                "{} {} {}",
+                position.line_name, position.fleet_number, position.registration_number
+            ),
+            symbol: '🚌',
+            style: walkers::extras::LabeledSymbolStyle::default(),
+        }
     }
 }

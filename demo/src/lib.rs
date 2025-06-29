@@ -6,16 +6,23 @@ mod plugins;
 mod tiles;
 mod windows;
 
-use std::collections::BTreeMap;
+use std::{
+    collections::BTreeMap,
+    sync::{Arc, Mutex},
+};
 
 use egui::{CentralPanel, Context, Frame};
 use tiles::{providers, Provider, TilesKind};
-use walkers::{Map, MapMemory};
+use walkers::{
+    extras::{LabeledSymbol, Places},
+    Map, MapMemory,
+};
 
 pub struct MyApp {
     providers: BTreeMap<Provider, Vec<TilesKind>>,
     selected_provider: Provider,
     map_memory: MapMemory,
+    positions: Arc<Mutex<Vec<LabeledSymbol>>>,
 
     #[allow(dead_code)]
     runtime: io::Runtime,
@@ -23,15 +30,24 @@ pub struct MyApp {
 
 impl MyApp {
     pub fn new(egui_ctx: Context) -> Self {
+        let positions = Arc::new(Mutex::new(Vec::new()));
+        let positions_clone = positions.clone();
+
         Self {
             providers: providers(egui_ctx.to_owned()),
             selected_provider: Provider::OpenStreetMap,
             map_memory: MapMemory::default(),
-            runtime: io::Runtime::new(async {
+            positions,
+            runtime: io::Runtime::new(async move {
                 loop {
                     log::debug!("Tick.");
                     let positions = mpkwroclaw::fetch_positions().await;
                     log::debug!("Fetched positions: {:#?}", positions);
+                    {
+                        let mut positions_lock = positions_clone.lock().unwrap();
+                        *positions_lock = positions.into_iter().map(LabeledSymbol::from).collect();
+                        log::debug!("Updated positions: {}", positions_lock.len());
+                    }
                     tokio::time::sleep(std::time::Duration::from_secs(5)).await;
                 }
             }),
@@ -50,9 +66,12 @@ impl eframe::App for MyApp {
                 .map(|tile| tile.as_ref().attribution())
                 .collect();
 
+            let positions = self.positions.lock().unwrap().clone();
+            log::debug!("Positions: {}", positions.len());
+
             let mut map = Map::new(None, &mut self.map_memory, my_position)
                 .zoom_with_ctrl(false)
-                .with_plugin(plugins::places());
+                .with_plugin(Places::new(self.positions.lock().unwrap().clone()));
 
             // Add layers.
             for (n, tiles) in tiles.iter_mut().enumerate() {
