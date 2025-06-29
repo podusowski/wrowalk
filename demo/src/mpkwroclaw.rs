@@ -1,5 +1,4 @@
 use serde::Deserialize;
-use std::collections::HashMap;
 
 pub async fn fetch_positions() -> Vec<MpkPosition> {
     let url =
@@ -23,21 +22,21 @@ pub async fn fetch_positions() -> Vec<MpkPosition> {
 #[derive(Deserialize, Debug)]
 pub struct MpkPosition {
     #[serde(rename = "_id")]
-    id: String,
+    pub id: String,
     #[serde(rename = "Nr_Boczny")]
-    fleet_number: String,
+    pub fleet_number: String,
     #[serde(rename = "Nr_Rej")]
-    registration_number: String,
+    pub registration_number: String,
     #[serde(rename = "Brygada")]
-    brigade: String,
+    pub brigade: String,
     #[serde(rename = "Nazwa_Linii")]
-    line_name: String,
+    pub line_name: String,
     #[serde(rename = "Ostatnia_Pozycja_Szerokosc")]
-    latitude: f64,
+    pub latitude: f64,
     #[serde(rename = "Ostatnia_Pozycja_Dlugosc")]
-    longitude: f64,
+    pub longitude: f64,
     #[serde(rename = "Data_Aktualizacji")]
-    last_update: String,
+    pub last_update: String,
 }
 
 impl MpkPosition {
