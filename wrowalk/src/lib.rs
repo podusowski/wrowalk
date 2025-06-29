@@ -28,6 +28,8 @@ pub struct MyApp {
 
 impl MyApp {
     pub fn new(egui_ctx: Context) -> Self {
+        egui_material_icons::initialize(&egui_ctx);
+
         let positions = Arc::new(Mutex::new(Vec::new()));
         let positions_clone = positions.clone();
 

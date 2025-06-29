@@ -59,6 +59,12 @@ pub fn zoom(ui: &Ui, map_memory: &mut MapMemory) {
                 if ui.button(RichText::new("➖").heading()).clicked() {
                     let _ = map_memory.zoom_out();
                 }
+
+                if let Some(position) = map_memory.detached() {
+                    if ui.button(RichText::new("\u{e55c}").heading()).clicked() {
+                        map_memory.follow_my_position();
+                    }
+                }
             });
         });
 }
