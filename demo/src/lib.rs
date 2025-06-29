@@ -15,7 +15,8 @@ pub struct MyApp {
     providers: BTreeMap<Provider, Vec<TilesKind>>,
     selected_provider: Provider,
     map_memory: MapMemory,
-    zoom_with_ctrl: bool,
+
+    #[allow(dead_code)]
     runtime: io::Runtime,
 }
 
@@ -25,7 +26,6 @@ impl MyApp {
             providers: providers(egui_ctx.to_owned()),
             selected_provider: Provider::OpenStreetMap,
             map_memory: MapMemory::default(),
-            zoom_with_ctrl: true,
             runtime: io::Runtime::new(async {
                 loop {
                     tokio::time::sleep(std::time::Duration::from_secs(1)).await;
@@ -39,7 +39,6 @@ impl MyApp {
 impl eframe::App for MyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         CentralPanel::default().frame(Frame::NONE).show(ctx, |ui| {
-            // Typically this would be a GPS acquired position which is tracked by the map.
             let my_position = places::wroclaw_glowny();
 
             let tiles = self.providers.get_mut(&self.selected_provider).unwrap();
@@ -49,7 +48,7 @@ impl eframe::App for MyApp {
                 .collect();
 
             let mut map = Map::new(None, &mut self.map_memory, my_position)
-                .zoom_with_ctrl(self.zoom_with_ctrl)
+                .zoom_with_ctrl(false)
                 .with_plugin(plugins::places());
 
             // Multiple layers can be added.
