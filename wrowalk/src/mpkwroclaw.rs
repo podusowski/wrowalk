@@ -51,8 +51,12 @@ impl From<MpkPosition> for walkers::extras::LabeledSymbol {
         walkers::extras::LabeledSymbol {
             position: walkers::lat_lon(position.latitude, position.longitude),
             label: format!("{}", position.line_name),
-            symbol: '🚌',
-            style: walkers::extras::LabeledSymbolStyle::default(),
+            symbol: Some(walkers::extras::Symbol::TwoCorners('🚌'.to_string())),
+            style: walkers::extras::LabeledSymbolStyle {
+                label_corner_radius: 1.,
+                symbol_size: 20.,
+                ..Default::default()
+            },
         }
     }
 }
