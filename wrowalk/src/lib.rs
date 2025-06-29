@@ -1,6 +1,7 @@
 mod io;
 mod mpkwroclaw;
 mod places;
+mod style;
 mod tiles;
 mod windows;
 
@@ -28,6 +29,7 @@ pub struct MyApp {
 
 impl MyApp {
     pub fn new(egui_ctx: Context) -> Self {
+        egui_ctx.set_style(style::amoled_friendly());
         egui_material_icons::initialize(&egui_ctx);
 
         let positions = Arc::new(Mutex::new(Vec::new()));
