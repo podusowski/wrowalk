@@ -1,5 +1,5 @@
 use crate::MyApp;
-use egui::{Align2, ComboBox, Image, RichText, Ui, Window};
+use egui::{Align2, ComboBox, Image, Response, RichText, Ui, Window};
 use walkers::{sources::Attribution, MapMemory};
 
 pub fn acknowledge(ui: &Ui, attributions: Vec<Attribution>) {
@@ -43,6 +43,10 @@ pub fn controls(app: &mut MyApp, ui: &Ui) {
         });
 }
 
+pub fn large_material_button(ui: &mut Ui, text: &str) -> Response {
+    ui.button(RichText::new(text).size(24.0))
+}
+
 /// Simple GUI to zoom in and out.
 pub fn zoom(ui: &Ui, map_memory: &mut MapMemory) {
     Window::new("Map")
@@ -52,16 +56,16 @@ pub fn zoom(ui: &Ui, map_memory: &mut MapMemory) {
         .anchor(Align2::LEFT_BOTTOM, [10., -10.])
         .show(ui.ctx(), |ui| {
             ui.horizontal(|ui| {
-                if ui.button(RichText::new("➕").heading()).clicked() {
+                if large_material_button(ui, "\u{e145}").clicked() {
                     let _ = map_memory.zoom_in();
                 }
 
-                if ui.button(RichText::new("➖").heading()).clicked() {
+                if large_material_button(ui, "\u{e15b}").clicked() {
                     let _ = map_memory.zoom_out();
                 }
 
-                if let Some(position) = map_memory.detached() {
-                    if ui.button(RichText::new("\u{e55c}").heading()).clicked() {
+                if map_memory.detached().is_some() {
+                    if large_material_button(ui, "\u{e55c}").clicked() {
                         map_memory.follow_my_position();
                     }
                 }
