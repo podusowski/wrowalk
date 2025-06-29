@@ -2,9 +2,8 @@ use std::collections::BTreeMap;
 
 use eframe::epaint::Shadow;
 use egui::{
-    epaint::text::{FontInsert, FontPriority, InsertFontFamily},
     style::{HandleShape, NumericColorSpace, Selection, WidgetVisuals, Widgets},
-    Color32, CornerRadius, FontData, FontFamily, FontId, Stroke, Style, TextStyle, Visuals,
+    Color32, CornerRadius, FontFamily, FontId, Stroke, Style, TextStyle, Visuals,
 };
 
 pub fn amoled_friendly() -> Style {
