@@ -4,6 +4,7 @@ mod places;
 mod plugins;
 mod tiles;
 mod windows;
+mod mpkwroclaw;
 
 use std::collections::BTreeMap;
 
@@ -28,8 +29,10 @@ impl MyApp {
             map_memory: MapMemory::default(),
             runtime: io::Runtime::new(async {
                 loop {
-                    tokio::time::sleep(std::time::Duration::from_secs(1)).await;
                     log::info!("Tick.");
+                    let positions = mpkwroclaw::fetch_positions(vec!["132".to_owned()]).await;
+                    log::debug!("Fetched positions: {:#?}", positions);
+                    tokio::time::sleep(std::time::Duration::from_secs(5)).await;
                 }
             }),
         }
