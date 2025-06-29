@@ -1,7 +1,6 @@
 mod io;
 mod mpkwroclaw;
 mod places;
-mod plugins;
 mod tiles;
 mod windows;
 
