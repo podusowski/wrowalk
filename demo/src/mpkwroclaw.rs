@@ -51,10 +51,7 @@ impl From<MpkPosition> for walkers::extras::LabeledSymbol {
     fn from(position: MpkPosition) -> Self {
         walkers::extras::LabeledSymbol {
             position: walkers::lat_lon(position.latitude, position.longitude),
-            label: format!(
-                "{} {} {}",
-                position.line_name, position.fleet_number, position.registration_number
-            ),
+            label: format!("{}", position.line_name),
             symbol: '🚌',
             style: walkers::extras::LabeledSymbolStyle::default(),
         }
