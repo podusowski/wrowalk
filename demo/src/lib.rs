@@ -16,6 +16,7 @@ pub struct MyApp {
     selected_provider: Provider,
     map_memory: MapMemory,
     zoom_with_ctrl: bool,
+    runtime: io::Runtime,
 }
 
 impl MyApp {
@@ -25,6 +26,12 @@ impl MyApp {
             selected_provider: Provider::OpenStreetMap,
             map_memory: MapMemory::default(),
             zoom_with_ctrl: true,
+            runtime: io::Runtime::new(async {
+                loop {
+                    tokio::time::sleep(std::time::Duration::from_secs(1)).await;
+                    log::info!("Tick.");
+                }
+            }),
         }
     }
 }
