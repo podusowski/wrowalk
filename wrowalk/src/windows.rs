@@ -2,13 +2,21 @@ use crate::MyApp;
 use egui::{Align2, ComboBox, Image, Response, RichText, Ui, Window};
 use walkers::{sources::Attribution, MapMemory};
 
-pub fn acknowledge(ui: &Ui, attributions: Vec<Attribution>) {
+pub fn acknowledge(app: &mut MyApp, ui: &Ui, attributions: Vec<Attribution>) {
     Window::new("Acknowledge")
         .collapsible(false)
         .resizable(false)
         .title_bar(false)
         .anchor(Align2::LEFT_TOP, [10., 10.])
         .show(ui.ctx(), |ui| {
+            ComboBox::from_label("Tile Provider")
+                .selected_text(format!("{:?}", app.selected_provider))
+                .show_ui(ui, |ui| {
+                    for p in app.providers.keys() {
+                        ui.selectable_value(&mut app.selected_provider, *p, format!("{:?}", p));
+                    }
+                });
+
             for attribution in attributions {
                 ui.horizontal(|ui| {
                     if let Some(logo) = attribution.logo_light {

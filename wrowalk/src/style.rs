@@ -98,7 +98,7 @@ fn text_styles() -> BTreeMap<TextStyle, FontId> {
 
     [
         (TextStyle::Small, FontId::new(12.0, Proportional)),
-        (TextStyle::Body, FontId::new(16., Proportional)),
+        (TextStyle::Body, FontId::new(12., Proportional)),
         (TextStyle::Button, FontId::new(20.0, Proportional)),
         (TextStyle::Heading, FontId::new(20.0, Proportional)),
         (TextStyle::Monospace, FontId::new(12.0, Monospace)),

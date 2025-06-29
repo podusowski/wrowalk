@@ -90,7 +90,7 @@ impl eframe::App for MyApp {
 
                 zoom(ui, &mut self.map_memory);
                 controls(self, ui);
-                acknowledge(ui, attributions);
+                acknowledge(self, ui, attributions);
             }
         });
     }
