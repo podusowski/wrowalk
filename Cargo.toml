@@ -1,5 +1,5 @@
 [workspace]
-members = ["demo", "demo_native", "demo_android/rust"]
+members = ["wrowalk", "demo_native", "demo_android/rust"]
 resolver = "2"
 
 [workspace.package]

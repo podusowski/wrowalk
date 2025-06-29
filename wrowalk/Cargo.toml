@@ -1,5 +1,5 @@
 [package]
-name = "demo"
+name = "wrowalk"
 version.workspace = true
 edition = "2021"
 publish = false
