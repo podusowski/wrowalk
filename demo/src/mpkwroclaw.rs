@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use serde::Deserialize;
 
-pub async fn fetch_positions(lines: Vec<String>) -> Vec<MpkPosition> {
+pub async fn fetch_positions() -> Vec<MpkPosition> {
     let url =
         "https://www.wroclaw.pl/open-data/datastore/dump/a9b3841d-e977-474e-9e86-8789e470a85a";
     let result = reqwest::get(url).await.unwrap();
