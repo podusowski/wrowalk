@@ -1,3 +1,4 @@
+use egui::{Color32, FontId};
 use serde::Deserialize;
 
 pub async fn fetch_positions() -> Vec<MpkPosition> {
@@ -50,11 +51,17 @@ impl From<MpkPosition> for walkers::extras::LabeledSymbol {
     fn from(position: MpkPosition) -> Self {
         walkers::extras::LabeledSymbol {
             position: walkers::lat_lon(position.latitude, position.longitude),
-            label: format!("{}", position.line_name),
-            symbol: Some(walkers::extras::Symbol::TwoCorners('🚌'.to_string())),
+            //label: format!("{}", position.line_name),
+            label: "".to_string(),
+            //symbol: Some(walkers::extras::Symbol::TwoCorners('🚌'.to_string())),
+            symbol: Some(walkers::extras::Symbol::Circle(position.line_name)),
             style: walkers::extras::LabeledSymbolStyle {
                 label_corner_radius: 1.,
-                symbol_size: 20.,
+                symbol_size: 22.,
+                symbol_background: Color32::BLACK.gamma_multiply(0.8),
+                symbol_color: Color32::WHITE,
+                symbol_font: FontId::proportional(10.),
+                symbol_stroke: egui::Stroke::new(1., Color32::WHITE),
                 ..Default::default()
             },
         }
