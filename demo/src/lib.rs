@@ -51,35 +51,21 @@ impl eframe::App for MyApp {
                 .zoom_with_ctrl(false)
                 .with_plugin(plugins::places());
 
-            // Multiple layers can be added.
+            // Add layers.
             for (n, tiles) in tiles.iter_mut().enumerate() {
-                // With a different transparency.
                 let transparency = if n == 0 { 1.0 } else { 0.25 };
                 map = map.with_layer(tiles.as_mut(), transparency);
             }
 
-            // Draw the map widget.
             ui.add(map);
 
-            // Draw utility windows.
+            // Show utility windows.
             {
                 use windows::*;
 
                 zoom(ui, &mut self.map_memory);
                 go_to_my_position(ui, &mut self.map_memory);
-
-                let http_stats = tiles
-                    .iter()
-                    .filter_map(|tiles| {
-                        if let TilesKind::Http(tiles) = tiles {
-                            Some(tiles.stats())
-                        } else {
-                            None
-                        }
-                    })
-                    .collect();
-
-                controls(self, ui, http_stats);
+                controls(self, ui);
                 acknowledge(ui, attributions);
             }
         });

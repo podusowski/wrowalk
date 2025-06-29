@@ -23,7 +23,7 @@ pub fn acknowledge(ui: &Ui, attributions: Vec<Attribution>) {
         });
 }
 
-pub fn controls(app: &mut MyApp, ui: &Ui, http_stats: Vec<walkers::HttpStats>) {
+pub fn controls(app: &mut MyApp, ui: &Ui) {
     Window::new("Controls")
         .collapsible(false)
         .resizable(false)
