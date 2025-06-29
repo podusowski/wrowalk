@@ -1,7 +1,7 @@
 use egui::{Color32, FontId};
 use serde::Deserialize;
 
-pub async fn fetch_positions() -> Vec<MpkPosition> {
+pub async fn fetch_vehicles() -> Vec<Vehicle> {
     let url =
         "https://www.wroclaw.pl/open-data/datastore/dump/a9b3841d-e977-474e-9e86-8789e470a85a";
     let result = reqwest::get(url).await.unwrap();
@@ -13,15 +13,15 @@ pub async fn fetch_positions() -> Vec<MpkPosition> {
 
     rdr.deserialize()
         .map(|record| {
-            let record: MpkPosition = record.unwrap();
+            let record: Vehicle = record.unwrap();
             record
         })
-        .filter(MpkPosition::sane)
+        .filter(Vehicle::sane)
         .collect()
 }
 
 #[derive(Deserialize, Debug)]
-pub struct MpkPosition {
+pub struct Vehicle {
     #[serde(rename = "_id")]
     pub id: String,
     #[serde(rename = "Nr_Boczny")]
@@ -40,15 +40,15 @@ pub struct MpkPosition {
     pub last_update: String,
 }
 
-impl MpkPosition {
+impl Vehicle {
     /// Does this record even make sense.
-    fn sane(position: &MpkPosition) -> bool {
+    fn sane(position: &Vehicle) -> bool {
         position.line_name != "None" && position.line_name != ""
     }
 }
 
-impl From<MpkPosition> for walkers::extras::LabeledSymbol {
-    fn from(position: MpkPosition) -> Self {
+impl From<Vehicle> for walkers::extras::LabeledSymbol {
+    fn from(position: Vehicle) -> Self {
         walkers::extras::LabeledSymbol {
             position: walkers::lat_lon(position.latitude, position.longitude),
             //label: format!("{}", position.line_name),

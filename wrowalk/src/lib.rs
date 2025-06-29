@@ -43,7 +43,7 @@ impl MyApp {
             runtime: io::Runtime::new(async move {
                 loop {
                     log::debug!("Tick.");
-                    let positions = mpkwroclaw::fetch_positions().await;
+                    let positions = mpkwroclaw::fetch_vehicles().await;
                     log::debug!("Fetched positions: {:#?}", positions);
                     {
                         let mut positions_lock = positions_clone.lock().unwrap();
