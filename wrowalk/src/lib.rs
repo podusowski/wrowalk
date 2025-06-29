@@ -89,7 +89,6 @@ impl eframe::App for MyApp {
                 use windows::*;
 
                 zoom(ui, &mut self.map_memory);
-                go_to_my_position(ui, &mut self.map_memory);
                 controls(self, ui);
                 acknowledge(ui, attributions);
             }

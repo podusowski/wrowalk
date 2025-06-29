@@ -9,7 +9,6 @@ pub fn acknowledge(ui: &Ui, attributions: Vec<Attribution>) {
         .title_bar(false)
         .anchor(Align2::LEFT_TOP, [10., 10.])
         .show(ui.ctx(), |ui| {
-            ui.label("map provided by");
             for attribution in attributions {
                 ui.horizontal(|ui| {
                     if let Some(logo) = attribution.logo_light {
@@ -18,8 +17,6 @@ pub fn acknowledge(ui: &Ui, attributions: Vec<Attribution>) {
                     ui.hyperlink_to(attribution.text, attribution.url);
                 });
             }
-            ui.label("viewed in ");
-            ui.hyperlink_to("Walkers", "https://github.com/podusowski/walkers");
         });
 }
 
@@ -71,28 +68,4 @@ pub fn zoom(ui: &Ui, map_memory: &mut MapMemory) {
                 }
             });
         });
-}
-
-/// When map is "detached", show a windows with an option to go back to my position.
-pub fn go_to_my_position(ui: &Ui, map_memory: &mut MapMemory) {
-    if let Some(position) = map_memory.detached() {
-        Window::new("Center")
-            .collapsible(false)
-            .resizable(false)
-            .title_bar(false)
-            .anchor(Align2::RIGHT_BOTTOM, [-10., -10.])
-            .show(ui.ctx(), |ui| {
-                ui.label(format!(
-                    "center at {:.04} {:.04}",
-                    position.x(),
-                    position.y()
-                ));
-                if ui
-                    .button(RichText::new("go to the starting point").heading())
-                    .clicked()
-                {
-                    map_memory.follow_my_position();
-                }
-            });
-    }
 }
