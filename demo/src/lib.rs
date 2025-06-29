@@ -1,5 +1,4 @@
 mod io;
-mod local_tiles;
 mod mpkwroclaw;
 mod places;
 mod plugins;

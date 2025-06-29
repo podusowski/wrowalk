@@ -3,8 +3,6 @@ use std::collections::BTreeMap;
 use egui::Context;
 use walkers::{HttpOptions, HttpTiles, Tiles};
 
-use crate::local_tiles::LocalTiles;
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Provider {
     OpenStreetMap,
@@ -12,19 +10,16 @@ pub enum Provider {
     OpenStreetMapWithGeoportal,
     MapboxStreets,
     MapboxSatellite,
-    LocalTiles,
 }
 
 pub(crate) enum TilesKind {
     Http(HttpTiles),
-    Local(LocalTiles),
 }
 
 impl AsMut<dyn Tiles> for TilesKind {
     fn as_mut(&mut self) -> &mut (dyn Tiles + 'static) {
         match self {
             TilesKind::Http(tiles) => tiles,
-            TilesKind::Local(tiles) => tiles,
         }
     }
 }
@@ -33,7 +28,6 @@ impl AsRef<dyn Tiles> for TilesKind {
     fn as_ref(&self) -> &(dyn Tiles + 'static) {
         match self {
             TilesKind::Http(tiles) => tiles,
-            TilesKind::Local(tiles) => tiles,
         }
     }
 }
@@ -94,11 +88,6 @@ pub(crate) fn providers(egui_ctx: Context) -> BTreeMap<Provider, Vec<TilesKind>>
             http_options(),
             egui_ctx.to_owned(),
         ))],
-    );
-
-    providers.insert(
-        Provider::LocalTiles,
-        vec![TilesKind::Local(LocalTiles::new(egui_ctx.to_owned()))],
     );
 
     // Pass in a mapbox access token at compile time. May or may not be what you want to do,
