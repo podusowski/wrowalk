@@ -46,6 +46,7 @@ impl MyApp {
                         *positions_lock = positions.into_iter().map(LabeledSymbol::from).collect();
                         log::debug!("Updated positions: {}", positions_lock.len());
                     }
+                    egui_ctx.request_repaint();
                     tokio::time::sleep(std::time::Duration::from_secs(5)).await;
                 }
             }),
