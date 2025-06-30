@@ -1,5 +1,8 @@
+use std::sync::{Arc, Mutex};
+
 use egui::{Color32, FontId};
 use serde::Deserialize;
+use walkers::extras::LabeledSymbol;
 
 pub async fn fetch_vehicles() -> Vec<Vehicle> {
     let url =
@@ -65,5 +68,41 @@ impl From<Vehicle> for walkers::extras::LabeledSymbol {
                 ..Default::default()
             },
         }
+    }
+}
+
+pub struct MpkWroclaw {
+    #[allow(dead_code)]
+    runtime: crate::io::Runtime,
+
+    positions: Arc<Mutex<Vec<LabeledSymbol>>>,
+}
+
+impl MpkWroclaw {
+    pub fn new(egui_ctx: egui::Context) -> Self {
+        let positions = Arc::new(Mutex::new(Vec::new()));
+        let positions_clone = positions.clone();
+
+        Self {
+            positions,
+            runtime: crate::io::Runtime::new(async move {
+                loop {
+                    log::debug!("Tick.");
+                    let positions = fetch_vehicles().await;
+                    log::debug!("Fetched positions: {:#?}", positions);
+                    {
+                        let mut positions_lock = positions_clone.lock().unwrap();
+                        *positions_lock = positions.into_iter().map(LabeledSymbol::from).collect();
+                        log::debug!("Updated positions: {}", positions_lock.len());
+                    }
+                    egui_ctx.request_repaint();
+                    tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+                }
+            }),
+        }
+    }
+
+    pub fn positions(&self) -> Vec<LabeledSymbol> {
+        self.positions.lock().unwrap().clone()
     }
 }

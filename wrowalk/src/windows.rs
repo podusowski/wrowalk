@@ -11,7 +11,7 @@ pub fn acknowledge(app: &mut MyApp, ui: &Ui, attributions: Vec<Attribution>) {
         .show(ui.ctx(), |ui| {
             ui.label(format!(
                 "Tracking {} vehicles.",
-                app.positions.lock().unwrap().len()
+                app.mpkwroclaw.positions().len()
             ));
 
             ComboBox::from_id_salt("Tile Provider")
