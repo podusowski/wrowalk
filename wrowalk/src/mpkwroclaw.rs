@@ -1,4 +1,7 @@
-use std::sync::{Arc, Mutex};
+use std::{
+    collections::HashMap,
+    sync::{Arc, Mutex},
+};
 
 use egui::{Color32, FontId};
 use serde::Deserialize;
@@ -23,7 +26,7 @@ pub async fn fetch_vehicles() -> Vec<Vehicle> {
         .collect()
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct Vehicle {
     #[serde(rename = "_id")]
     pub id: String,
@@ -71,11 +74,18 @@ impl From<Vehicle> for walkers::extras::LabeledSymbol {
     }
 }
 
+#[derive(Debug)]
+struct Vehicle2 {
+    line: String,
+    position: walkers::Position,
+}
+
 pub struct MpkWroclaw {
     #[allow(dead_code)]
     runtime: crate::io::Runtime,
 
     positions: Arc<Mutex<Vec<LabeledSymbol>>>,
+    vehicles: Arc<Mutex<HashMap<String, Vehicle2>>>,
 }
 
 impl MpkWroclaw {
@@ -83,18 +93,44 @@ impl MpkWroclaw {
         let positions = Arc::new(Mutex::new(Vec::new()));
         let positions_clone = positions.clone();
 
+        let vehicles = Arc::new(Mutex::new(HashMap::new()));
+        let vehicles_clone = vehicles.clone();
+
         Self {
             positions,
+            vehicles,
             runtime: crate::io::Runtime::new(async move {
                 loop {
-                    log::debug!("Tick.");
                     let positions = fetch_vehicles().await;
-                    log::debug!("Fetched positions: {:#?}", positions);
+                    log::trace!("Fetched positions: {:#?}", positions);
+
                     {
                         let mut positions_lock = positions_clone.lock().unwrap();
-                        *positions_lock = positions.into_iter().map(LabeledSymbol::from).collect();
-                        log::debug!("Updated positions: {}", positions_lock.len());
+                        *positions_lock = positions
+                            .clone()
+                            .into_iter()
+                            .map(LabeledSymbol::from)
+                            .collect();
                     }
+
+                    {
+                        let mut vehicles_lock = vehicles_clone.lock().unwrap();
+                        for position in &positions {
+                            vehicles_lock.insert(
+                                position.id.clone(),
+                                Vehicle2 {
+                                    line: position.line_name.clone(),
+                                    position: walkers::lat_lon(
+                                        position.latitude,
+                                        position.longitude,
+                                    ),
+                                },
+                            );
+                        }
+
+                        log::debug!("Vehicles: {:#?}", vehicles_lock);
+                    }
+
                     egui_ctx.request_repaint();
                     tokio::time::sleep(std::time::Duration::from_secs(5)).await;
                 }
