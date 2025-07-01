@@ -7,7 +7,31 @@ use std::{
 use tokio::time::sleep;
 use walkers::Position;
 
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::OnceLock;
+
+static APP_IN_BACKGROUND: OnceLock<AtomicBool> = OnceLock::new();
+
+#[no_mangle]
+pub extern "C" fn Java_com_github_podusowski_wrowalk_MainActivity_setAppInBackground(
+    env: jni::JNIEnv,
+    _class: jni::objects::JClass,
+    is_background: bool,
+) {
+    let atomic = APP_IN_BACKGROUND.get_or_init(|| AtomicBool::new(false));
+    atomic.store(is_background, Ordering::SeqCst);
+}
+
+pub fn is_app_in_background() -> bool {
+    APP_IN_BACKGROUND
+        .get()
+        .map(|a| a.load(Ordering::SeqCst))
+        .unwrap_or(false)
+}
+
 async fn fetch_vehicles() -> Vec<RawVehicleRecord> {
+    log::info!("Fetching vehicles from Wroclaw Open Data.");
+
     let url =
         "https://www.wroclaw.pl/open-data/datastore/dump/a9b3841d-e977-474e-9e86-8789e470a85a";
     let bytes = reqwest::get(url).await.unwrap().bytes().await.unwrap();
@@ -53,8 +77,8 @@ impl RawVehicleRecord {
     fn sane(&self) -> bool {
         self.line_name != "None"
             && !self.line_name.is_empty()
-            && (self.longitude- 16.0).abs() < 10.0
-            && (self.latitude- 52.0).abs() < 10.0
+            && (self.longitude - 16.0).abs() < 10.0
+            && (self.latitude - 52.0).abs() < 10.0
     }
 }
 

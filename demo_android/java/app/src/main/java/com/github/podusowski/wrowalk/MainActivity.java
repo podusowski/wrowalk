@@ -19,6 +19,8 @@ public class MainActivity extends GameActivity {
     System.loadLibrary("main");
   }
 
+  private static native void setAppInBackground(boolean isBackground);
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
       // Shrink view so it does not get covered by insets.
@@ -51,4 +53,16 @@ public class MainActivity extends GameActivity {
       event.offsetLocation(-location[0], -location[1]);
       return super.onTouchEvent(event);
   }
+
+  @Override
+    protected void onPause() {
+        super.onPause();
+        setAppInBackground(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setAppInBackground(false);
+    }
 }

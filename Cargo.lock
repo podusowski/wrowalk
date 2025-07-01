@@ -5237,6 +5237,7 @@ dependencies = [
  "egui_extras",
  "egui_material_icons",
  "itertools",
+ "jni",
  "log",
  "reqwest",
  "serde",

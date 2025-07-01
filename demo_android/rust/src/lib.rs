@@ -7,7 +7,7 @@ fn android_main(
 
     android_logger::init_once(
         android_logger::Config::default()
-            .with_tag("walkers")
+            .with_tag("wrowalk")
             .with_max_level(log::LevelFilter::Info),
     );
     let mut options = NativeOptions::default();
