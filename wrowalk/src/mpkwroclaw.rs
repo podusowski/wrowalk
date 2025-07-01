@@ -51,7 +51,10 @@ struct RawVehicleRecord {
 impl RawVehicleRecord {
     /// Does this record even make sense.
     fn sane(&self) -> bool {
-        self.line_name != "None" && !self.line_name.is_empty()
+        self.line_name != "None"
+            && !self.line_name.is_empty()
+            && (self.longitude- 16.0).abs() < 10.0
+            && (self.latitude- 52.0).abs() < 10.0
     }
 }
 
