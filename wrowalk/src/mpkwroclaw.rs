@@ -92,11 +92,10 @@ pub struct MpkWroclaw {
 impl MpkWroclaw {
     pub fn new(egui_ctx: egui::Context) -> Self {
         let vehicles = Arc::new(Mutex::new(HashMap::new()));
-        let vehicles_clone = vehicles.clone();
 
         Self {
-            vehicles,
-            runtime: crate::io::Runtime::new(fetch_continuously(vehicles_clone, egui_ctx)),
+            vehicles: vehicles.clone(),
+            runtime: crate::io::Runtime::new(fetch_continuously(vehicles, egui_ctx)),
         }
     }
 
