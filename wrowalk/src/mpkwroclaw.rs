@@ -17,11 +17,14 @@ async fn fetch_vehicles() -> Vec<RawVehicleRecord> {
         .from_reader(bytes.as_ref());
 
     rdr.deserialize()
-        .map(|record| {
-            let record: RawVehicleRecord = record.unwrap();
-            record
+        .filter_map(|record| {
+            let record: RawVehicleRecord = record.ok()?;
+            if record.sane() {
+                Some(record)
+            } else {
+                None
+            }
         })
-        .filter(RawVehicleRecord::sane)
         .collect()
 }
 
@@ -48,8 +51,8 @@ struct RawVehicleRecord {
 
 impl RawVehicleRecord {
     /// Does this record even make sense.
-    fn sane(position: &RawVehicleRecord) -> bool {
-        position.line_name != "None" && position.line_name != ""
+    fn sane(&self) -> bool {
+        self.line_name != "None" && self.line_name != ""
     }
 }
 
