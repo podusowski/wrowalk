@@ -5,6 +5,7 @@ use std::{
     time::Duration,
 };
 use tokio::time::sleep;
+use walkers::Position;
 
 async fn fetch_vehicles() -> Vec<RawVehicleRecord> {
     let url =
@@ -78,6 +79,10 @@ impl Vehicle {
     /// Get the last position of the vehicle.
     pub fn position(&self) -> walkers::Position {
         self.positions.last().unwrap().clone()
+    }
+
+    pub fn positions(&self) -> Vec<Position> {
+        self.positions.clone()
     }
 }
 

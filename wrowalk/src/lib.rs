@@ -8,10 +8,11 @@ mod windows;
 use std::collections::BTreeMap;
 
 use egui::{CentralPanel, Color32, Context, FontId, Frame};
+use itertools::Itertools as _;
 use tiles::{providers, Provider, TilesKind};
 use walkers::{
     extras::{LabeledSymbol, Places},
-    Map, MapMemory,
+    Map, MapMemory, Plugin,
 };
 
 pub struct MyApp {
@@ -74,9 +75,16 @@ impl eframe::App for MyApp {
                 .map(|tile| tile.as_ref().attribution())
                 .collect();
 
-            let mut map = Map::new(None, &mut self.map_memory, my_position)
-                .zoom_with_ctrl(false)
-                .with_plugin(Places::new(positions));
+            let mut map = Map::new(None, &mut self.map_memory, my_position).zoom_with_ctrl(false);
+
+            // Add a track of the last positions of vehicles.
+            for vehicle in self.mpkwroclaw.vehicles().values() {
+                let mut positions = vehicle.positions();
+                positions.reverse();
+                map = map.with_plugin(Track { positions });
+            }
+
+            map = map.with_plugin(Places::new(positions));
 
             // Add layers.
             for (n, tiles) in tiles.iter_mut().enumerate() {
@@ -94,5 +102,31 @@ impl eframe::App for MyApp {
                 acknowledge(self, ui, attributions);
             }
         });
+    }
+}
+
+/// Draws a track of the last positions of vehicles. Line becomes more transparent
+/// the older the position is.
+struct Track {
+    positions: Vec<walkers::Position>,
+}
+
+impl Plugin for Track {
+    fn run(
+        self: Box<Self>,
+        ui: &mut egui::Ui,
+        _response: &egui::Response,
+        projector: &walkers::Projector,
+        _map_memory: &walkers::MapMemory,
+    ) {
+        for (n, (from, to)) in self.positions.iter().tuple_windows().enumerate() {
+            let from_projected = projector.project(*from).to_pos2();
+            let to_projected = projector.project(*to).to_pos2();
+            let alpha = 1.0 - (n as f32 / self.positions.len() as f32);
+            ui.painter().add(egui::Shape::line(
+                vec![from_projected, to_projected],
+                egui::Stroke::new(5.0, Color32::BLACK.gamma_multiply(alpha)),
+            ));
+        }
     }
 }
