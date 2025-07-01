@@ -71,7 +71,7 @@ impl Vehicle {
 
     fn update(&mut self, position: walkers::Position) {
         self.positions.push(position);
-        if self.positions.len() > 100 {
+        if self.positions.len() > 10 {
             self.positions.remove(0);
         }
     }
