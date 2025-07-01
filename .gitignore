@@ -1,6 +1,6 @@
 /target
 /wrowalk/target
-/demo_native/target
+/wrowalk_native/target
 /wrowalk_android/java/.gradle
 /wrowalk_android/java/local.properties
 /wrowalk_android/java/.idea
