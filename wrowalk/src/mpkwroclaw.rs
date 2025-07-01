@@ -12,11 +12,10 @@ async fn fetch_vehicles() -> Vec<RawVehicleRecord> {
     let result = reqwest::get(url).await.unwrap();
     let bytes = result.bytes().await.unwrap();
 
-    let mut rdr = csv::ReaderBuilder::new()
+    csv::ReaderBuilder::new()
         .has_headers(true)
-        .from_reader(bytes.as_ref());
-
-    rdr.deserialize()
+        .from_reader(bytes.as_ref())
+        .deserialize()
         .filter_map(|record| {
             let record: RawVehicleRecord = record.ok()?;
             if record.sane() {
