@@ -1,13 +1,10 @@
+use serde::Deserialize;
 use std::{
     collections::HashMap,
     sync::{Arc, Mutex},
 };
 
-use egui::{Color32, FontId};
-use serde::Deserialize;
-use walkers::extras::LabeledSymbol;
-
-pub async fn fetch_vehicles() -> Vec<Vehicle> {
+async fn fetch_vehicles() -> Vec<RawVehicleRecord> {
     let url =
         "https://www.wroclaw.pl/open-data/datastore/dump/a9b3841d-e977-474e-9e86-8789e470a85a";
     let result = reqwest::get(url).await.unwrap();
@@ -19,15 +16,16 @@ pub async fn fetch_vehicles() -> Vec<Vehicle> {
 
     rdr.deserialize()
         .map(|record| {
-            let record: Vehicle = record.unwrap();
+            let record: RawVehicleRecord = record.unwrap();
             record
         })
-        .filter(Vehicle::sane)
+        .filter(RawVehicleRecord::sane)
         .collect()
 }
 
 #[derive(Deserialize, Debug, Clone)]
-pub struct Vehicle {
+#[allow(unused)]
+struct RawVehicleRecord {
     #[serde(rename = "_id")]
     pub id: String,
     #[serde(rename = "Nr_Boczny")]
@@ -46,41 +44,20 @@ pub struct Vehicle {
     pub last_update: String,
 }
 
-impl Vehicle {
+impl RawVehicleRecord {
     /// Does this record even make sense.
-    fn sane(position: &Vehicle) -> bool {
+    fn sane(position: &RawVehicleRecord) -> bool {
         position.line_name != "None" && position.line_name != ""
     }
 }
 
-impl From<Vehicle> for walkers::extras::LabeledSymbol {
-    fn from(position: Vehicle) -> Self {
-        walkers::extras::LabeledSymbol {
-            position: walkers::lat_lon(position.latitude, position.longitude),
-            //label: format!("{}", position.line_name),
-            label: "".to_string(),
-            //symbol: Some(walkers::extras::Symbol::TwoCorners('🚌'.to_string())),
-            symbol: Some(walkers::extras::Symbol::Circle(position.line_name)),
-            style: walkers::extras::LabeledSymbolStyle {
-                label_corner_radius: 1.,
-                symbol_size: 22.,
-                symbol_background: Color32::BLACK.gamma_multiply(0.8),
-                symbol_color: Color32::WHITE,
-                symbol_font: FontId::proportional(10.),
-                symbol_stroke: egui::Stroke::new(1., Color32::WHITE),
-                ..Default::default()
-            },
-        }
-    }
-}
-
 #[derive(Debug, Clone)]
-pub struct Vehicle2 {
+pub struct Vehicle {
     pub line: String,
     positions: Vec<walkers::Position>,
 }
 
-impl Vehicle2 {
+impl Vehicle {
     fn update(&mut self, position: walkers::Position) {
         self.positions.push(position);
         if self.positions.len() > 100 {
@@ -88,6 +65,7 @@ impl Vehicle2 {
         }
     }
 
+    /// Get the last position of the vehicle.
     pub fn position(&self) -> walkers::Position {
         self.positions.last().unwrap().clone()
     }
@@ -97,20 +75,15 @@ pub struct MpkWroclaw {
     #[allow(dead_code)]
     runtime: crate::io::Runtime,
 
-    positions: Arc<Mutex<Vec<LabeledSymbol>>>,
-    vehicles: Arc<Mutex<HashMap<String, Vehicle2>>>,
+    vehicles: Arc<Mutex<HashMap<String, Vehicle>>>,
 }
 
 impl MpkWroclaw {
     pub fn new(egui_ctx: egui::Context) -> Self {
-        let positions = Arc::new(Mutex::new(Vec::new()));
-        let positions_clone = positions.clone();
-
         let vehicles = Arc::new(Mutex::new(HashMap::new()));
         let vehicles_clone = vehicles.clone();
 
         Self {
-            positions,
             vehicles,
             runtime: crate::io::Runtime::new(async move {
                 loop {
@@ -118,20 +91,11 @@ impl MpkWroclaw {
                     log::trace!("Fetched positions: {:#?}", positions);
 
                     {
-                        let mut positions_lock = positions_clone.lock().unwrap();
-                        *positions_lock = positions
-                            .clone()
-                            .into_iter()
-                            .map(LabeledSymbol::from)
-                            .collect();
-                    }
-
-                    {
                         let mut vehicles_lock = vehicles_clone.lock().unwrap();
                         for position in &positions {
                             vehicles_lock
                                 .entry(position.id.clone())
-                                .or_insert_with(|| Vehicle2 {
+                                .or_insert_with(|| Vehicle {
                                     line: position.line_name.clone(),
                                     positions: Vec::new(),
                                 })
@@ -148,7 +112,7 @@ impl MpkWroclaw {
         }
     }
 
-    pub fn vehicles(&self) -> HashMap<String, Vehicle2> {
+    pub fn vehicles(&self) -> HashMap<String, Vehicle> {
         self.vehicles.lock().unwrap().clone()
     }
 }
