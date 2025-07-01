@@ -125,6 +125,8 @@ async fn fetch_continuously(
                 .update(walkers::lat_lon(position.latitude, position.longitude));
         }
 
+        log::debug!("Vehicles: {:#?}", vehicles.lock().unwrap());
+
         egui_ctx.request_repaint();
         sleep(Duration::from_secs(5)).await;
     }

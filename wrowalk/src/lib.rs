@@ -125,7 +125,7 @@ impl Plugin for Track {
             let alpha = 1.0 - (n as f32 / self.positions.len() as f32);
             ui.painter().add(egui::Shape::line(
                 vec![from_projected, to_projected],
-                egui::Stroke::new(6.0, Color32::BLACK.gamma_multiply(alpha * 0.8)),
+                egui::Stroke::new(6.0, Color32::ORANGE.gamma_multiply(alpha * 0.8)),
             ));
         }
     }
