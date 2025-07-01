@@ -14,7 +14,7 @@ static APP_IN_BACKGROUND: OnceLock<AtomicBool> = OnceLock::new();
 
 #[no_mangle]
 pub extern "C" fn Java_com_github_podusowski_wrowalk_MainActivity_setAppInBackground(
-    env: jni::JNIEnv,
+    _env: jni::JNIEnv,
     _class: jni::objects::JClass,
     is_background: bool,
 ) {
