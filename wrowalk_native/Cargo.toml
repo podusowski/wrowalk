@@ -1,9 +1,9 @@
 [package]
-name = "demo_native"
+name = "wrowalk_native"
 version.workspace = true
 edition = "2021"
 publish = false
-default-run = "demo_native"
+default-run = "wrowalk_native"
 
 [dependencies]
 wrowalk = { path = "../wrowalk" }

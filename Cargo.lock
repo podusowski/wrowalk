@@ -930,16 +930,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "demo_native"
-version = "0.1.0"
-dependencies = [
- "eframe",
- "egui",
- "env_logger",
- "wrowalk",
-]
-
-[[package]]
 name = "deranged"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5243,6 +5233,16 @@ dependencies = [
  "serde",
  "tokio",
  "walkers",
+]
+
+[[package]]
+name = "wrowalk_native"
+version = "0.1.0"
+dependencies = [
+ "eframe",
+ "egui",
+ "env_logger",
+ "wrowalk",
 ]
 
 [[package]]
