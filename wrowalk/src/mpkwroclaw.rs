@@ -100,21 +100,17 @@ async fn fetch_continuously(
 ) {
     loop {
         let positions = fetch_vehicles().await;
-        log::trace!("Fetched positions: {:#?}", positions);
 
-        {
-            let mut vehicles_lock = vehicles.lock().unwrap();
-            for position in &positions {
-                vehicles_lock
-                    .entry(position.id.clone())
-                    .or_insert_with(|| Vehicle {
-                        line: position.line_name.clone(),
-                        positions: Vec::new(),
-                    })
-                    .update(walkers::lat_lon(position.latitude, position.longitude));
-            }
-
-            log::debug!("Vehicles: {:#?}", vehicles_lock);
+        for position in &positions {
+            vehicles
+                .lock()
+                .unwrap()
+                .entry(position.id.clone())
+                .or_insert_with(|| Vehicle {
+                    line: position.line_name.clone(),
+                    positions: Vec::new(),
+                })
+                .update(walkers::lat_lon(position.latitude, position.longitude));
         }
 
         egui_ctx.request_repaint();
