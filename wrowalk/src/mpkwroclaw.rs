@@ -9,8 +9,7 @@ use tokio::time::sleep;
 async fn fetch_vehicles() -> Vec<RawVehicleRecord> {
     let url =
         "https://www.wroclaw.pl/open-data/datastore/dump/a9b3841d-e977-474e-9e86-8789e470a85a";
-    let result = reqwest::get(url).await.unwrap();
-    let bytes = result.bytes().await.unwrap();
+    let bytes = reqwest::get(url).await.unwrap().bytes().await.unwrap();
 
     csv::ReaderBuilder::new()
         .has_headers(true)
@@ -51,7 +50,7 @@ struct RawVehicleRecord {
 impl RawVehicleRecord {
     /// Does this record even make sense.
     fn sane(&self) -> bool {
-        self.line_name != "None" && self.line_name != ""
+        self.line_name != "None" && !self.line_name.is_empty()
     }
 }
 
