@@ -89,6 +89,7 @@ pub struct MpkWroclaw {
     vehicles: Arc<Mutex<HashMap<String, Vehicle>>>,
 }
 
+/// Tracks vehicles in Wroclaw and keeps a short history.
 impl MpkWroclaw {
     pub fn new(egui_ctx: egui::Context) -> Self {
         let vehicles = Arc::new(Mutex::new(HashMap::new()));
