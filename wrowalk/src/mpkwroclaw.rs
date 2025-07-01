@@ -78,6 +78,17 @@ impl From<Vehicle> for walkers::extras::LabeledSymbol {
 struct Vehicle2 {
     line: String,
     position: walkers::Position,
+    history: Vec<walkers::Position>,
+}
+
+impl Vehicle2 {
+    fn update(&mut self, position: walkers::Position) {
+        self.position = position;
+        self.history.push(position);
+        if self.history.len() > 100 {
+            self.history.remove(0);
+        }
+    }
 }
 
 pub struct MpkWroclaw {
@@ -116,16 +127,17 @@ impl MpkWroclaw {
                     {
                         let mut vehicles_lock = vehicles_clone.lock().unwrap();
                         for position in &positions {
-                            vehicles_lock.insert(
-                                position.id.clone(),
-                                Vehicle2 {
+                            vehicles_lock
+                                .entry(position.id.clone())
+                                .or_insert_with(|| Vehicle2 {
                                     line: position.line_name.clone(),
                                     position: walkers::lat_lon(
                                         position.latitude,
                                         position.longitude,
                                     ),
-                                },
-                            );
+                                    history: Vec::new(),
+                                })
+                                .update(walkers::lat_lon(position.latitude, position.longitude));
                         }
 
                         log::debug!("Vehicles: {:#?}", vehicles_lock);
