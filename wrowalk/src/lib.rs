@@ -7,9 +7,12 @@ mod windows;
 
 use std::collections::BTreeMap;
 
-use egui::{CentralPanel, Context, Frame};
+use egui::{CentralPanel, Color32, Context, FontId, Frame};
 use tiles::{providers, Provider, TilesKind};
-use walkers::{extras::Places, Map, MapMemory};
+use walkers::{
+    extras::{LabeledSymbol, Places},
+    Map, MapMemory,
+};
 
 pub struct MyApp {
     providers: BTreeMap<Provider, Vec<TilesKind>>,
@@ -30,12 +33,40 @@ impl MyApp {
             mpkwroclaw: mpkwroclaw::MpkWroclaw::new(egui_ctx),
         }
     }
+
+    fn positions(&self) -> Vec<LabeledSymbol> {
+        self.mpkwroclaw
+            .vehicles()
+            .iter()
+            .map(|(_, vehicle)| {
+                let position = vehicle.position();
+                walkers::extras::LabeledSymbol {
+                    position,
+                    //label: format!("{}", position.line_name),
+                    label: "".to_string(),
+                    //symbol: Some(walkers::extras::Symbol::TwoCorners('🚌'.to_string())),
+                    symbol: Some(walkers::extras::Symbol::Circle(vehicle.line.clone())),
+                    style: walkers::extras::LabeledSymbolStyle {
+                        label_corner_radius: 1.,
+                        symbol_size: 22.,
+                        symbol_background: Color32::BLACK.gamma_multiply(0.8),
+                        symbol_color: Color32::WHITE,
+                        symbol_font: FontId::proportional(10.),
+                        symbol_stroke: egui::Stroke::new(1., Color32::WHITE),
+                        ..Default::default()
+                    },
+                }
+            })
+            .collect()
+    }
 }
 
 impl eframe::App for MyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         CentralPanel::default().frame(Frame::NONE).show(ctx, |ui| {
             let my_position = places::wroclaw_glowny();
+
+            let positions = self.positions();
 
             let tiles = self.providers.get_mut(&self.selected_provider).unwrap();
             let attributions: Vec<_> = tiles
@@ -45,7 +76,7 @@ impl eframe::App for MyApp {
 
             let mut map = Map::new(None, &mut self.map_memory, my_position)
                 .zoom_with_ctrl(false)
-                .with_plugin(Places::new(self.mpkwroclaw.positions()));
+                .with_plugin(Places::new(positions));
 
             // Add layers.
             for (n, tiles) in tiles.iter_mut().enumerate() {

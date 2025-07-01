@@ -74,20 +74,22 @@ impl From<Vehicle> for walkers::extras::LabeledSymbol {
     }
 }
 
-#[derive(Debug)]
-struct Vehicle2 {
-    line: String,
-    position: walkers::Position,
+#[derive(Debug, Clone)]
+pub struct Vehicle2 {
+    pub line: String,
     positions: Vec<walkers::Position>,
 }
 
 impl Vehicle2 {
     fn update(&mut self, position: walkers::Position) {
-        self.position = position;
         self.positions.push(position);
         if self.positions.len() > 100 {
             self.positions.remove(0);
         }
+    }
+
+    pub fn position(&self) -> walkers::Position {
+        self.positions.last().unwrap().clone()
     }
 }
 
@@ -131,10 +133,6 @@ impl MpkWroclaw {
                                 .entry(position.id.clone())
                                 .or_insert_with(|| Vehicle2 {
                                     line: position.line_name.clone(),
-                                    position: walkers::lat_lon(
-                                        position.latitude,
-                                        position.longitude,
-                                    ),
                                     positions: Vec::new(),
                                 })
                                 .update(walkers::lat_lon(position.latitude, position.longitude));
@@ -150,7 +148,7 @@ impl MpkWroclaw {
         }
     }
 
-    pub fn positions(&self) -> Vec<LabeledSymbol> {
-        self.positions.lock().unwrap().clone()
+    pub fn vehicles(&self) -> HashMap<String, Vehicle2> {
+        self.vehicles.lock().unwrap().clone()
     }
 }
