@@ -2,7 +2,9 @@ use serde::Deserialize;
 use std::{
     collections::HashMap,
     sync::{Arc, Mutex},
+    time::Duration,
 };
+use tokio::time::sleep;
 
 async fn fetch_vehicles() -> Vec<RawVehicleRecord> {
     let url =
@@ -58,6 +60,13 @@ pub struct Vehicle {
 }
 
 impl Vehicle {
+    fn new(line: String) -> Self {
+        Self {
+            line,
+            positions: Vec::new(),
+        }
+    }
+
     fn update(&mut self, position: walkers::Position) {
         self.positions.push(position);
         if self.positions.len() > 100 {
@@ -99,21 +108,16 @@ async fn fetch_continuously(
     egui_ctx: egui::Context,
 ) {
     loop {
-        let positions = fetch_vehicles().await;
-
-        for position in &positions {
+        for position in &fetch_vehicles().await {
             vehicles
                 .lock()
                 .unwrap()
                 .entry(position.id.clone())
-                .or_insert_with(|| Vehicle {
-                    line: position.line_name.clone(),
-                    positions: Vec::new(),
-                })
+                .or_insert_with(|| Vehicle::new(position.line_name.clone()))
                 .update(walkers::lat_lon(position.latitude, position.longitude));
         }
 
         egui_ctx.request_repaint();
-        tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+        sleep(Duration::from_secs(5)).await;
     }
 }
