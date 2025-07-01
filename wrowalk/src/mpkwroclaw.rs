@@ -78,15 +78,15 @@ impl From<Vehicle> for walkers::extras::LabeledSymbol {
 struct Vehicle2 {
     line: String,
     position: walkers::Position,
-    history: Vec<walkers::Position>,
+    positions: Vec<walkers::Position>,
 }
 
 impl Vehicle2 {
     fn update(&mut self, position: walkers::Position) {
         self.position = position;
-        self.history.push(position);
-        if self.history.len() > 100 {
-            self.history.remove(0);
+        self.positions.push(position);
+        if self.positions.len() > 100 {
+            self.positions.remove(0);
         }
     }
 }
@@ -135,7 +135,7 @@ impl MpkWroclaw {
                                         position.latitude,
                                         position.longitude,
                                     ),
-                                    history: Vec::new(),
+                                    positions: Vec::new(),
                                 })
                                 .update(walkers::lat_lon(position.latitude, position.longitude));
                         }
