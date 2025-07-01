@@ -143,18 +143,23 @@ async fn fetch_continuously(
     egui_ctx: egui::Context,
 ) {
     loop {
-        for position in &fetch_vehicles().await {
-            vehicles
-                .lock()
-                .unwrap()
-                .entry(position.id.clone())
-                .or_insert_with(|| Vehicle::new(position.line_name.clone()))
-                .update(walkers::lat_lon(position.latitude, position.longitude));
+        if !is_app_in_background() {
+            for position in &fetch_vehicles().await {
+                vehicles
+                    .lock()
+                    .unwrap()
+                    .entry(position.id.clone())
+                    .or_insert_with(|| Vehicle::new(position.line_name.clone()))
+                    .update(walkers::lat_lon(position.latitude, position.longitude));
+            }
+
+            log::debug!("Vehicles: {:#?}", vehicles.lock().unwrap());
+
+            egui_ctx.request_repaint();
+        } else {
+            log::info!("App is in background, skipping fetch.");
         }
 
-        log::debug!("Vehicles: {:#?}", vehicles.lock().unwrap());
-
-        egui_ctx.request_repaint();
         sleep(Duration::from_secs(5)).await;
     }
 }
