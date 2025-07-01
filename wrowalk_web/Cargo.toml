@@ -1,11 +1,11 @@
 [package]
-name = "demo_web"
+name = "wrowalk_web"
 version.workspace = true
 edition = "2021"
 publish = false
 
 [dependencies]
-demo = { path = "../demo" }
+wrowalk = { path = "../wrowalk" }
 eframe.workspace = true
 egui.workspace = true
 log.workspace = true
