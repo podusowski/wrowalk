@@ -43,9 +43,7 @@ impl MyApp {
                 let position = vehicle.position();
                 walkers::extras::LabeledSymbol {
                     position,
-                    //label: format!("{}", position.line_name),
                     label: "".to_string(),
-                    //symbol: Some(walkers::extras::Symbol::TwoCorners('🚌'.to_string())),
                     symbol: Some(walkers::extras::Symbol::Circle(vehicle.line.clone())),
                     style: walkers::extras::LabeledSymbolStyle {
                         label_corner_radius: 1.,
