@@ -85,34 +85,39 @@ impl MpkWroclaw {
 
         Self {
             vehicles,
-            runtime: crate::io::Runtime::new(async move {
-                loop {
-                    let positions = fetch_vehicles().await;
-                    log::trace!("Fetched positions: {:#?}", positions);
-
-                    {
-                        let mut vehicles_lock = vehicles_clone.lock().unwrap();
-                        for position in &positions {
-                            vehicles_lock
-                                .entry(position.id.clone())
-                                .or_insert_with(|| Vehicle {
-                                    line: position.line_name.clone(),
-                                    positions: Vec::new(),
-                                })
-                                .update(walkers::lat_lon(position.latitude, position.longitude));
-                        }
-
-                        log::debug!("Vehicles: {:#?}", vehicles_lock);
-                    }
-
-                    egui_ctx.request_repaint();
-                    tokio::time::sleep(std::time::Duration::from_secs(5)).await;
-                }
-            }),
+            runtime: crate::io::Runtime::new(fetch_continuously(vehicles_clone, egui_ctx)),
         }
     }
 
     pub fn vehicles(&self) -> HashMap<String, Vehicle> {
         self.vehicles.lock().unwrap().clone()
+    }
+}
+
+async fn fetch_continuously(
+    vehicles: Arc<Mutex<HashMap<String, Vehicle>>>,
+    egui_ctx: egui::Context,
+) {
+    loop {
+        let positions = fetch_vehicles().await;
+        log::trace!("Fetched positions: {:#?}", positions);
+
+        {
+            let mut vehicles_lock = vehicles.lock().unwrap();
+            for position in &positions {
+                vehicles_lock
+                    .entry(position.id.clone())
+                    .or_insert_with(|| Vehicle {
+                        line: position.line_name.clone(),
+                        positions: Vec::new(),
+                    })
+                    .update(walkers::lat_lon(position.latitude, position.longitude));
+            }
+
+            log::debug!("Vehicles: {:#?}", vehicles_lock);
+        }
+
+        egui_ctx.request_repaint();
+        tokio::time::sleep(std::time::Duration::from_secs(5)).await;
     }
 }
