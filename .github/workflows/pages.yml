@@ -16,9 +16,9 @@ jobs:
       - name: Install Trunk
         run: cargo install trunk@0.20.3 --locked
       - name: Build
-        run: env -C demo_web trunk build --release --public-url .
+        run: env -C wrowalk_web trunk build --release --public-url .
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: demo_web/dist
+          folder: wrowalk_web/dist
           single-commit: true
