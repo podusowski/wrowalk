@@ -9,10 +9,7 @@ pub fn acknowledge(app: &mut MyApp, ui: &Ui, attributions: Vec<Attribution>) {
         .title_bar(false)
         .anchor(Align2::LEFT_TOP, [10., 10.])
         .show(ui.ctx(), |ui| {
-            ui.label(format!(
-                "Tracking {} vehicles.",
-                app.positions().len()
-            ));
+            ui.label(format!("Tracking {} vehicles.", app.positions().len()));
 
             ComboBox::from_id_salt("Tile Provider")
                 .selected_text(format!("{:?}", app.selected_provider))
