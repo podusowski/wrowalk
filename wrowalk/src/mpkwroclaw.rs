@@ -164,6 +164,7 @@ async fn fetch_continuously(
             egui_ctx.request_repaint();
         } else {
             log::info!("App is in background, skipping fetch.");
+            vehicles.lock().unwrap().clear();
         }
 
         sleep(Duration::from_secs(5)).await;
