@@ -38,8 +38,8 @@ impl MyApp {
     fn positions(&self) -> Vec<LabeledSymbol> {
         self.mpkwroclaw
             .vehicles()
-            .iter()
-            .map(|(_, vehicle)| {
+            .values()
+            .map(|vehicle| {
                 let position = vehicle.position();
                 walkers::extras::LabeledSymbol {
                     position,
