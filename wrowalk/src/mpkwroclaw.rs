@@ -86,6 +86,10 @@ impl RawVehicleRecord {
             && (self.longitude - 16.0).abs() < 10.0
             && (self.latitude - 52.0).abs() < 10.0
     }
+
+    fn id(&self) -> String {
+        format!("{}-{}", self.line_name, self.fleet_number)
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -154,7 +158,7 @@ async fn fetch_continuously(
                 vehicles
                     .lock()
                     .unwrap()
-                    .entry(record.id.clone())
+                    .entry(record.id())
                     .or_insert_with(|| Vehicle::new(record.line_name.clone()))
                     .update(walkers::lat_lon(record.latitude, record.longitude));
             }
