@@ -150,13 +150,13 @@ async fn fetch_continuously(
 ) {
     loop {
         if !is_app_in_background() {
-            for position in &fetch_vehicles().await {
+            for record in &fetch_vehicles().await {
                 vehicles
                     .lock()
                     .unwrap()
-                    .entry(position.id.clone())
-                    .or_insert_with(|| Vehicle::new(position.line_name.clone()))
-                    .update(walkers::lat_lon(position.latitude, position.longitude));
+                    .entry(record.id.clone())
+                    .or_insert_with(|| Vehicle::new(record.line_name.clone()))
+                    .update(walkers::lat_lon(record.latitude, record.longitude));
             }
 
             log::debug!("Vehicles: {:#?}", vehicles.lock().unwrap());
