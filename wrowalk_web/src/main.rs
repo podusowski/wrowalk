@@ -24,7 +24,7 @@ fn main() {
             .start(
                 canvas,
                 web_options,
-                Box::new(|cc| Ok(Box::new(demo::MyApp::new(cc.egui_ctx.clone())))),
+                Box::new(|cc| Ok(Box::new(wrowalk::MyApp::new(cc.egui_ctx.clone())))),
             )
             .await
             .expect("failed to start eframe");

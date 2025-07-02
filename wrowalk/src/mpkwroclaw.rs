@@ -4,7 +4,13 @@ use std::{
     sync::{Arc, Mutex},
     time::Duration,
 };
+
+#[cfg(not(target_arch = "wasm32"))]
 use tokio::time::sleep;
+
+#[cfg(target_arch = "wasm32")]
+use wasmtimer::tokio::sleep;
+
 use walkers::Position;
 
 use std::sync::atomic::{AtomicBool, Ordering};
