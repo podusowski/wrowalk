@@ -15,7 +15,7 @@ pub fn acknowledge(app: &mut MyApp, ui: &Ui, attributions: Vec<Attribution>) {
                 .selected_text(format!("{:?}", app.selected_provider))
                 .show_ui(ui, |ui| {
                     for p in app.providers.keys() {
-                        ui.selectable_value(&mut app.selected_provider, *p, format!("{:?}", p));
+                        ui.selectable_value(&mut app.selected_provider, *p, format!("{p:?}"));
                     }
                 });
 
@@ -51,10 +51,10 @@ pub fn zoom(ui: &Ui, map_memory: &mut MapMemory) {
                     let _ = map_memory.zoom_out();
                 }
 
-                if map_memory.detached().is_some() {
-                    if large_material_button(ui, "\u{e55c}").clicked() {
-                        map_memory.follow_my_position();
-                    }
+                if map_memory.detached().is_some()
+                    && large_material_button(ui, "\u{e55c}").clicked()
+                {
+                    map_memory.follow_my_position();
                 }
             });
         });

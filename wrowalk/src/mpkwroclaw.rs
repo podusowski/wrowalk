@@ -113,7 +113,7 @@ impl Vehicle {
 
     /// Get the last position of the vehicle.
     pub fn position(&self) -> walkers::Position {
-        self.positions.last().unwrap().clone()
+        *self.positions.last().unwrap()
     }
 
     pub fn positions(&self) -> Vec<Position> {
