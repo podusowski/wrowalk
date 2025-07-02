@@ -6,6 +6,7 @@
 /wrowalk_android/java/.idea
 /wrowalk_android/java/app/build
 /wrowalk_android/java/app/src/main/jniLibs
+/wrowalk_web/dist
 
 # Path where `demo_native` stores the HTTP cache.
 .cache
